@@ -1,4 +1,4 @@
-from app import db
+from luizalabs_flask import db
 from datetime import datetime as dt
 
 #  tabela auxiliar para relacionamentos Many-to-many
