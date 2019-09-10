@@ -1,21 +1,21 @@
-import json
-from flask import Response, abort
-from flask_sqlalchemy import BaseQuery
+# coding=utf-8
+
+class CustomModel:
+
+    @property
+    def serialize(self):
+        fields = self._get_columns()
+        rest = {}
+        for field in fields:
+            rest.__setitem__(field, self.__getattribute__(field))
+        return rest
+
+    # Só um teste para depois
+    @property
+    def created(self):
+        return self.created.isoformat()
 
 
-class CustomBaseQuery(BaseQuery):
-
-    def get_or_415(self, ident):
-        model_class_name = ''
-        try:
-            model_class_name = self._mapper_zero().class_.__name__
-        except Exception as e:
-            print(e)
-
-        rv = self.get(ident)
-        if not rv:
-            error_message = json.dumps({'message': model_class_name + ' ' + str(ident) + ' not found'})
-            abort(Response(error_message, 415))
-        return rv
-
+    def _get_columns(self):
+        return self.__table__.columns.keys()
 

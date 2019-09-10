@@ -1,7 +1,7 @@
-
+# coding=utf-8
 from luizalabs_flask import db
-from datetime import datetime as dt
-from .database_handler import  CustomBaseQuery
+from .database_handler import CustomModel
+
 
 
 #  tabela auxiliar para relacionamentos Many-to-many
@@ -17,11 +17,10 @@ favoritos = db.Table('favoritos',
                      )
 
 #  tabela de clientes
-class Cliente(db.Model):
+class Cliente(db.Model, CustomModel):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), unique=False, nullable=False)
     email = db.Column(db.String(128), unique=True, nullable=False)
-    created = db.Column(db.DateTime, nullable=False, default=dt.now)
 
     def __repr__(self):
         return '<Cliente %r>' % self.name
@@ -30,8 +29,9 @@ class Cliente(db.Model):
         return Cliente.query.filter_by(id=id).first()
 
 
+
 #  tabela de produtos
-class Produto(db.Model):
+class Produto(db.Model, CustomModel):
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(128), unique=True, nullable=True)
@@ -39,26 +39,6 @@ class Produto(db.Model):
     image = db.Column(db.String(256), nullable=True)
     brand = db.Column(db.String(128), nullable=True)
     reviewScore = db.Column(db.Float, nullable=True)
-    created = db.Column(db.DateTime, nullable=True, default=dt.now)
 
     def __repr__(self):
         return '<Produto %r>' % self.title
-
-    @property
-    def serialize(self):
-        return{
-            'id': self.id,
-            'title': self.title,
-            'price': self.price,
-            'image': self.image,
-            'brand': self.brand,
-            'reviewScore': self.reviewScore,
-            'created': dump_datetime(self.created)
-        }
-
-
-def dump_datetime(value):
-    """Deserialize datetime object into string form for JSON processing."""
-    if value is None:
-        return None
-    return [value.strftime("%Y-%m-%d"), value.strftime("%H:%M:%S")]
