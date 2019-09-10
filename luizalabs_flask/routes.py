@@ -1,21 +1,9 @@
-from flask_restful import Resource, Api
+from flask_restful import Api
 from luizalabs_flask import app
+from .product_api_views import ProductApi
+
 
 api = Api(app)
 
-class ApiRoot(Resource):
-
-    def get(self):
-        pass
-
-    def post(self):
-        pass
-
-
-@app.route('/')
-def hello_world():
-    return 'Hello World!'
-
-api.add_resource(ApiRoot, '/api/v1/')
-# api.add_resource()
+api.add_resource(ProductApi, '/api/product/<int:id>')
 
