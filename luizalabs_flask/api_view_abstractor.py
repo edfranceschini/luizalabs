@@ -91,6 +91,7 @@ class Api_view(Resource):
                 return Response(json.dumps({"message": 'Atualizado'}), 200)
 
             if delete:
+
                 record = self.model.query.filter_by(**post_data).first()
                 if not record:
                     return Response(json.dumps(
@@ -112,14 +113,18 @@ class Api_view(Resource):
         :param data:
         :return bolean:
         """
+        print(col)
+        print(data)
+        if self.model.relations_exists:
         # validar se todos os campos existem (menos o ID):
-        for c in col:  # todo Refactorar pois não está elegante
-            if c != 'id':
-                try:
-                    data[c]
-                except:
-                    return False
-        return True
+            for c in col:  # todo Refactorar pois não está elegante
+                if c != 'id':
+                    try:
+                        data[c]
+                    except:
+                        return False
+            return True
+        return False
 
 
     def format_response(self, object):

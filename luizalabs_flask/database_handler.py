@@ -1,4 +1,5 @@
 # coding=utf-8
+from luizalabs_flask import db
 
 class CustomModel:
 
@@ -27,5 +28,8 @@ class CustomModel:
         """
 
         return 'email' if "Cliente" in str(self) else "title"
+
+
+
 
 

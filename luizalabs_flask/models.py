@@ -5,16 +5,28 @@ from .database_handler import CustomModel
 
 
 #  tabela auxiliar para relacionamentos Many-to-many
-favoritos = db.Table('favoritos',
-                     db.Column('cliente_id',
-                               db.Integer,
-                               db.ForeignKey('cliente.id'),
-                               primary_key=True),
-                     db.Column('produto_id',
-                               db.Integer,
-                               db.ForeignKey('produto.id'),
-                               primary_key=True)
-                     )
+class Favorito(db.Model, CustomModel):
+
+    cliente_id = db.Column(
+        db.Integer,
+        db.ForeignKey('cliente.id'),
+        primary_key=True)
+    produto_id = db.Column(
+        db.Integer,
+        db.ForeignKey('produto.id'),
+        primary_key=True)
+
+    def __repr__(self):
+        return '<Favorito %r>' % self.cliente_id
+
+    @property
+    def relations_exists(self):
+        cliente = Cliente.query.filter_by(id=self.cliente_id).first()
+        produto = Produto.query.filter_by(id=self.produto_id).first()
+        if not cliente or not produto:
+            return False
+        return True
+
 
 #  tabela de clientes
 class Cliente(db.Model, CustomModel):
@@ -28,7 +40,9 @@ class Cliente(db.Model, CustomModel):
     def get(self, id):
         return Cliente.query.filter_by(id=id).first()
 
-
+    @property
+    def relations_exists(self):
+        return True
 
 #  tabela de produtos
 class Produto(db.Model, CustomModel):
@@ -43,4 +57,6 @@ class Produto(db.Model, CustomModel):
     def __repr__(self):
         return '<Produto %r>' % self.title
 
-
+    @property
+    def relations_exists(self):
+        return True

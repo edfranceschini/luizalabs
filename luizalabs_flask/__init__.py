@@ -13,3 +13,4 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 from luizalabs_flask import routes
+
