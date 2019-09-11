@@ -1,0 +1,43 @@
+Desafio Luiza Labs
+
+## Instalação
+
+   Para instalar os módulos python necessários para o funcionamento:
+
+   pip install -r requirements.txt
+
+   Para inicializar o banco de dados:
+
+   flask db init
+   flask db migrate
+   flask db upgrade
+
+## Endpoints
+
+    /api/product/
+    /api/product/<id>
+
+    /api/customer/
+    /api/customer/<id>
+
+    /api/favorite/
+    /api/favorite/<id>
+
+## Usando
+
+    Os métodos HTTP devem ser usados em cada endpoint para realizar as tarefas
+    da Api:
+
+    Post -> Incluir
+    Put -> Alterar
+    Get -> listar / detalhar (nos endpoints com <id>)
+    Delete -> Excluir
+
+
+## Tests
+
+    Testes unitários simples em python usando:
+
+    python tests/customer_tests.py
+    python tests/product_tests.py
+    python tests/favorites_tests.py
