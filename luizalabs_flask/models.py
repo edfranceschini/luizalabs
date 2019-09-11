@@ -42,3 +42,5 @@ class Produto(db.Model, CustomModel):
 
     def __repr__(self):
         return '<Produto %r>' % self.title
+
+

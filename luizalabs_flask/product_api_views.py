@@ -12,8 +12,4 @@ class Product(Api_view):
 # somento para listagem.
 class Products(Product):
 
-    def post(self):
-        return json('Metodo não permitido', 400)
-
-    def put(self):
-        return json('Metodo não permitido', 400)
+    pass

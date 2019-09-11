@@ -19,3 +19,13 @@ class CustomModel:
     def _get_columns(self):
         return self.__table__.columns.keys()
 
+    def handle_unique_column(self):
+        """
+        Fazendo desta forma somente pelo tempo disponivel. Mas fica aqui
+        o ponto de entrada para melhorar o tratamento de campos unicos e
+        fazer o abstrator funcionar para qualquer modelo.
+        """
+
+        return 'email' if "Cliente" in str(self) else "title"
+
+

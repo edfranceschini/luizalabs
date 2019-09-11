@@ -48,22 +48,60 @@ class Api_view(Resource):
                         mimetype=response[2])
 
     def post(self):
+        return self.db_parser()
+
+
+    def put(self):
+        return self.db_parser(update=True)
+
+
+    def delete(self):
+        return self.db_parser(delete=True)
+
+
+    def db_parser(self, update=False, delete=False):
+
         columns = self.model._get_columns(self.model)  # todo !Melhorar isso!
         post_data = request.get_json()
         valid = self.validate(columns, post_data)
+
         if valid:
             save_data = self.model(**post_data)
-            db.session.add(save_data)
-            try:
+
+            if not update and not delete:
+
+                db.session.add(save_data)
+                try:
+                    db.session.commit()
+                    db.session.close()
+                    return Response(json.dumps({"message": 'Criado'}), 201)
+                except IntegrityError:
+                    return Response(json.dumps({"message":'Registro já existe.'
+                                    ' Para atualiza utilize o método PUT.'}),
+                                    409)
+
+            if update:
+
+                # todo: Melhorar isso
+                unique_field = self.model.handle_unique_column(self.model)
+                unique_search = {unique_field: post_data[unique_field]}
+                record = self.model.query.filter_by(
+                    **unique_search).update(post_data)
                 db.session.commit()
-                db.session.close()
-            except IntegrityError:
-                return Response(json.dumps({"message": 'Registro já existe. '
-                                'Para atualiza utilize o método PUT.'}), 409)
-            return Response(json.dumps({"message": 'Criado'}), 201)
+                return Response(json.dumps({"message": 'Atualizado'}), 200)
+
+            if delete:
+                record = self.model.query.filter_by(**post_data).first()
+                if not record:
+                    return Response(json.dumps(
+                        {"message": 'Registro não encontrado'}), 400)
+                db.session.delete(record)
+                db.session.commit()
+                return Response(
+                    json.dumps({"message": 'Registro excluído'}), 200)
+
         return Response(json.dumps(
             {"message": 'Erro nos parametros de entrada.'}), 400)
-
 
 
     def validate(self, col, data):
@@ -82,13 +120,6 @@ class Api_view(Resource):
                 except:
                     return False
         return True
-
-
-    def put(self):
-        pass
-
-    def delete(self):
-        pass
 
 
     def format_response(self, object):
